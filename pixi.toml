@@ -1,0 +1,17 @@
+[project]
+authors = ["wingerted <wingerted@gmail.com>"]
+channels = ["conda-forge"]
+description = "Conda package for sbepp"
+name = "sbepp"
+platforms = ["osx-arm64", "linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+cmake = "*"
+ninja = "*"
+clang = "*"
+clangxx = "*"
+rattler-build = "*"
+ccache = "*"

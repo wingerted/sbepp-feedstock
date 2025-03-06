@@ -1,0 +1,28 @@
+package:
+  name: sbepp
+  version: 1.5.1
+
+source:
+  git: https://github.com/OleksandrKvl/sbepp.git
+  tag: ${{ version }}
+
+build:
+  script: ./build.sh
+
+requirements:
+  build:
+    - clang
+    - clangxx
+    - cmake
+    - ninja
+   
+  host:
+    - fmt
+    - pugixml
+  run: []  # 运行时依赖自动从 host 继承
+
+# 包的元数据
+about:
+  homepage: https://github.com/OleksandrKvl/sbepp
+  license: MIT
+  summary: C++ implementation of the FIX Simple Binary Encoding

@@ -1,0 +1,52 @@
+name: Release Conda Package
+
+on:
+  push:
+    tags:
+      - 'v*'  # 当推送以 v 开头的 tag 时触发
+
+# 添加权限配置
+permissions:
+  contents: write  # 允许工作流创建 releases
+  id-token: write  # 添加 id-token 写入权限
+
+jobs:
+  build:
+    name: Build package
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target-platform: linux-64
+          - os: macos-15
+            target-platform: osx-arm64
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build conda package
+      uses: prefix-dev/rattler-build-action@v0.2.30
+      with:
+        # needs to be unique for each matrix entry
+        artifact-name: package-${{ matrix.target-platform }}
+        build-args: --target-platform ${{ matrix.target-platform }}${{ matrix.target-platform == 'linux-aarch64' && ' --no-test' || '' }}
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          output/**/*.conda
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      
+    - name: Upload all packages
+      shell: bash
+      # do not upload on PR
+      if: github.event_name == 'push'
+      run: |
+        # uses trusted publishers for the upload
+        for file in output/**/*.conda; do
+          rattler-build upload prefix -c cxxlibs "$file"
+        done
