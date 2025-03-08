@@ -1,10 +1,10 @@
 package:
   name: sbepp
-  version: 1.5.1
+  version: 1.4.2
 
 source:
   git: https://github.com/OleksandrKvl/sbepp.git
-  tag: ${{ version }}
+  tag: 1.4.2
 
 build:
   script: ./build.sh
